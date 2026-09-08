@@ -1,3 +1,36 @@
+# Do nauki
+
+
+- Instalacja paczki tar.xz
+
+Rozpakuj: -x (extract) -f (wskazanie na plik)
+tar -xf tor-browser-linux-x86_64-15.0.21.tar.xz
+
+- Instal plik .deb
+
+sudo dpkg -i paczka.deb
+
+-- jezeli bedzie blad przy instalacji `dpkg` to zainstaluj zaleznosci
+
+sudo apt-get install -f
+
+
+
+- Ubuntu software zamykanie programu:
+
+killall snap-store
+
+- komprezja zip (rekurencyjne i bez wyswietlania)
+
+zip -rq compressed_filename.zip foldername
+
+- dekompresja w tle
+
+unzip -q filename.zip
+
+
+
+
 ```
 image - to obraz serwisu
 contener - to instancja obrazu + dane z volume
