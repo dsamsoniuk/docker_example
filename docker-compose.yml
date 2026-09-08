@@ -1,43 +1,18 @@
 services:
-    web:
-        image: nginx:alpine
-        volumes:
-            - "./etc/nginx/default.conf:/etc/nginx/conf.d/default.conf"
-            # - "./etc/ssl:/etc/ssl"
-            - "./:/var/www/html"
-            - "./etc/nginx/default.template.conf:/etc/nginx/conf.d/default.template"
-        ports:
-            - "80:80"
-            - "3000:443"
-        environment:
-            - NGINX_HOST=localhost
-        command: /bin/sh -c "envsubst '$$NGINX_HOST' < /etc/nginx/conf.d/default.template > /etc/nginx/conf.d/default.conf && nginx -g 'daemon off;'"
-        restart: always
-        depends_on:
-            - php
-            - mysqldb
-        networks:
-            - js_test
-    apache2:
-        image: httpd:2.4-alpine
-        volumes:
-            - ./:/var/www/html
-            - ./etc/httpd.conf:/usr/local/apache2/conf/httpd.conf
-        ports:
-            - 81:80
-        networks:
-            - js_test
-    php:
+
+    php_example:
         image: php:8.2-fpm
+        container_name: php_example
         restart: always
         user: "1000:1000"
         volumes:
             - "./etc/php/php.ini:/usr/local/etc/php/conf.d/php.ini"
             - "./:/var/www/html"
         networks:
-            - js_test
-    mysqldb:
+            - docker_example_net
+    mysqldb_example:
         image: mysql:latest
+        container_name: mysqldb_example
         restart: always
         # env_file:
         #     - ".env"
@@ -53,6 +28,40 @@ services:
             - "./database:/docker-entrypoint-initdb.d"
             - ./etc/mysql.cnf:/etc/mysql/conf.d/my.cnf
         networks:
-            - js_test
+            - docker_example_net
+
+    web_example:
+        image: nginx:alpine
+        volumes:
+            - "./etc/nginx/default.conf:/etc/nginx/conf.d/default.conf"
+            # - "./etc/ssl:/etc/ssl"
+            - "./:/var/www/html"
+            - "./etc/nginx/default.template.conf:/etc/nginx/conf.d/default.template"
+        ports:
+            - "80:80"
+            - "3000:443"
+        environment:
+            - NGINX_HOST=localhost
+        command: /bin/sh -c "envsubst '$$NGINX_HOST' < /etc/nginx/conf.d/default.template > /etc/nginx/conf.d/default.conf && nginx -g 'daemon off;'"
+        restart: always
+        depends_on:
+            - php_example
+            - mysqldb_example
+        networks:
+            - docker_example_net
+    apache2_example:
+        image: httpd:2.4-alpine
+        volumes:
+            - ./:/var/www/html
+            - ./etc/httpd.conf:/usr/local/apache2/conf/httpd.conf
+        ports:
+            - 81:80
+        depends_on:
+            - php_example
+            - mysqldb_example
+        networks:
+            - docker_example_net
+
 networks:
-  js_test:
+  docker_example_net:
+    driver: bridge
