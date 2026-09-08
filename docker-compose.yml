@@ -10,6 +10,18 @@ services:
             - "./:/var/www/html"
         networks:
             - docker_example_net
+
+    php_plus_server:
+        build: ./
+        container_name: php_plus_server
+        volumes:
+            - "./:/var/www/html"
+        user: "1000:1000"
+        ports:
+            - "82:80"
+        networks:
+            - docker_example_net
+
     mysqldb_example:
         image: mysql:latest
         container_name: mysqldb_example
